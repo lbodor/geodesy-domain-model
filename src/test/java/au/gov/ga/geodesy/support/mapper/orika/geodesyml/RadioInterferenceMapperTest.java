@@ -12,10 +12,11 @@ import au.gov.xml.icsm.geodesyml.v_0_3.GeodesyMLType;
 import au.gov.xml.icsm.geodesyml.v_0_3.RadioInterferencesType;
 import au.gov.xml.icsm.geodesyml.v_0_3.SiteLogType;
 import net.opengis.gml.v_3_2_1.TimePeriodType;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.Is;
-import org.hamcrest.core.IsNull;
-import org.testng.Assert;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+
 import org.testng.annotations.Test;
 
 import java.time.Instant;
@@ -23,8 +24,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Tests the mapping of a GeodesyML humiditySensor element
- * to and from a HumiditySensorLogItem domain object.
+ * Tests the mapping of a GeodesyML RadioInterference element to and from a RadioInterference domain object.
  */
 public class RadioInterferenceMapperTest {
 
@@ -40,29 +40,30 @@ public class RadioInterferenceMapperTest {
     @Test
     public void testMappingWithoutToDate() throws Exception {
 
-        GeodesyMLType mobs = marshaller.unmarshal(TestResources.geodesyMLTestDataSiteLogReader("IRKJ_RadioInterference_NoToDate"), GeodesyMLType.class)
-                .getValue();
+        GeodesyMLType mobs = marshaller.unmarshal(TestResources.geodesyMLTestDataSiteLogReader("IRKJ_RadioInterference_NoToDate"),
+            GeodesyMLType.class).getValue();
 
-        SiteLogType logItem = GeodesyMLUtils.getElementFromJAXBElements(mobs.getElements(), SiteLogType.class)
-                .findFirst().get();
+        SiteLogType logItem = GeodesyMLUtils.getElementFromJAXBElements(mobs.getElements(), SiteLogType.class).findFirst().get();
 
         RadioInterferencesType radioInterferencesDTO = logItem.getRadioInterferencesSet().get(0).getRadioInterferences();
 
         RadioInterference radioInterferenceEntity = mapper.to(radioInterferencesDTO);
 
-        assertCommon(radioInterferencesDTO, radioInterferenceEntity, MappingDirection.FROM_DTO_TO_ENTITY);
+        assertCommonFields(radioInterferencesDTO, radioInterferenceEntity, MappingDirection.FROM_DTO_TO_ENTITY);
 
         // IRKJ_RadioInterference_NoToDate has no end/to date
-        MatcherAssert.assertThat(((TimePeriodType) radioInterferencesDTO.getValidTime().getAbstractTimePrimitive().getValue()).getEndPosition().getValue().size(), Is.is(0));
-        MatcherAssert.assertThat(radioInterferenceEntity.getEffectiveDates().getTo(), IsNull.nullValue());
+        assertThat(((TimePeriodType) radioInterferencesDTO.getValidTime().getAbstractTimePrimitive().getValue()).getEndPosition()
+            .getValue().size(), is(0));
+        assertThat(radioInterferenceEntity.getEffectiveDates().getTo(), nullValue());
 
         // <----> Test after mapping back the other way
         RadioInterferencesType radioInterferencesDTO2 = mapper.from(radioInterferenceEntity);
 
-        assertCommon(radioInterferencesDTO, radioInterferenceEntity, MappingDirection.FROM_ENTITY_TO_DTO);
+        assertCommonFields(radioInterferencesDTO, radioInterferenceEntity, MappingDirection.FROM_ENTITY_TO_DTO);
 
         // IRKJ_RadioInterference_NoToDate has no end/to date
-        MatcherAssert.assertThat(((TimePeriodType) radioInterferencesDTO2.getValidTime().getAbstractTimePrimitive().getValue()).getEndPosition(), IsNull.nullValue());
+        assertThat(((TimePeriodType) radioInterferencesDTO2.getValidTime().getAbstractTimePrimitive().getValue()).getEndPosition(),
+            nullValue());
     }
 
     /**
@@ -74,71 +75,58 @@ public class RadioInterferenceMapperTest {
     public void testMappingWithToDate() throws Exception {
         DateTimeFormatter format = dateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
-        GeodesyMLType mobs = marshaller.unmarshal(TestResources.geodesyMLTestDataSiteLogReader("IRKJ_RadioInterference_WithToDate"), GeodesyMLType.class)
-                .getValue();
+        GeodesyMLType mobs = marshaller.unmarshal(TestResources.geodesyMLTestDataSiteLogReader("IRKJ_RadioInterference_WithToDate"),
+            GeodesyMLType.class).getValue();
 
-        SiteLogType logItem = GeodesyMLUtils.getElementFromJAXBElements(mobs.getElements(), SiteLogType.class)
-                .findFirst().get();
+        SiteLogType logItem = GeodesyMLUtils.getElementFromJAXBElements(mobs.getElements(), SiteLogType.class).findFirst().get();
 
         RadioInterferencesType radioInterferencesDTO = logItem.getRadioInterferencesSet().get(0).getRadioInterferences();
 
         RadioInterference radioInterferenceEntity = mapper.to(radioInterferencesDTO);
 
-        assertCommon(radioInterferencesDTO, radioInterferenceEntity, MappingDirection.FROM_DTO_TO_ENTITY);
+        assertCommonFields(radioInterferencesDTO, radioInterferenceEntity, MappingDirection.FROM_DTO_TO_ENTITY);
 
         // IRKJ_RadioInterference_WithToDate has an end/to date
-        String fromDateString = ((TimePeriodType) radioInterferencesDTO.getValidTime().getAbstractTimePrimitive().getValue()).getBeginPosition().getValue().get(0);
+        String fromDateString = ((TimePeriodType) radioInterferencesDTO.getValidTime().getAbstractTimePrimitive().getValue())
+            .getBeginPosition().getValue().get(0);
         String fromDateFormatted = GMLDateUtils.stringToDateToString(fromDateString, format);
-        MatcherAssert.assertThat(format.format(radioInterferenceEntity.getEffectiveDates().getFrom()), Is.is(fromDateFormatted));
+        assertThat(format.format(radioInterferenceEntity.getEffectiveDates().getFrom()), is(fromDateFormatted));
 
         // <----> Test after mapping back the other way
         RadioInterferencesType radioInterferencesDTO2 = mapper.from(radioInterferenceEntity);
 
-        assertCommon(radioInterferencesDTO, radioInterferenceEntity, MappingDirection.FROM_ENTITY_TO_DTO);
+        assertCommonFields(radioInterferencesDTO, radioInterferenceEntity, MappingDirection.FROM_ENTITY_TO_DTO);
 
         // IRKJ_RadioInterference_WithToDate has an end/to date
 
         String actualToDateFormatted = getDTODateFormattedAsString(radioInterferencesDTO2, ToFromDate.TO_DATE);
-        String expectedToDateFormatted = getEntityDateFormattedAsString(radioInterferenceEntity, ToFromDate.TO_DATE);
-        MatcherAssert.assertThat(actualToDateFormatted, Is.is(expectedToDateFormatted));
+        String expectedToDateFormatted = format.format(radioInterferenceEntity.getEffectiveDates().getTo());
+        assertThat(actualToDateFormatted, is(expectedToDateFormatted));
     }
 
-    private void assertCommon(RadioInterferencesType radioInterferencesDTO, RadioInterference radioInterferenceEntity, MappingDirection mappingDirection) {
+    private void assertCommonFields(RadioInterferencesType radioInterferencesDTO, RadioInterference radioInterferenceEntity,
+                                    MappingDirection mappingDirection) {
         if (mappingDirection == MappingDirection.FROM_DTO_TO_ENTITY) {
-            MatcherAssert.assertThat(radioInterferenceEntity.getNotes(), Is.is(radioInterferencesDTO.getNotes()));
-            MatcherAssert.assertThat(radioInterferenceEntity.getObservedDegradation(), Is.is(radioInterferencesDTO.getObservedDegradations()));
-            MatcherAssert.assertThat(radioInterferenceEntity.getPossibleProblemSource(), Is.is(radioInterferencesDTO.getPossibleProblemSources()));
+            assertThat(radioInterferenceEntity.getNotes(), is(radioInterferencesDTO.getNotes()));
+            assertThat(radioInterferenceEntity.getObservedDegradation(), is(radioInterferencesDTO.getObservedDegradations()));
+            assertThat(radioInterferenceEntity.getPossibleProblemSource(), is(radioInterferencesDTO.getPossibleProblemSources()));
 
             // From Date
             String expectedFromDateFormatted = getDTODateFormattedAsString(radioInterferencesDTO, ToFromDate.FROM_DATE);
-            String actualFromDateFormatted = getEntityDateFormattedAsString(radioInterferenceEntity, ToFromDate.FROM_DATE);
-            MatcherAssert.assertThat(actualFromDateFormatted, Is.is(expectedFromDateFormatted));
+            String actualFromDateFormatted = format.format(radioInterferenceEntity.getEffectiveDates().getFrom());
+            assertThat(actualFromDateFormatted, is(expectedFromDateFormatted));
         } else {
-            MatcherAssert.assertThat(radioInterferencesDTO.getNotes(), Is.is(radioInterferencesDTO.getNotes()));
-            MatcherAssert.assertThat(radioInterferencesDTO.getObservedDegradations(), Is.is(radioInterferencesDTO.getObservedDegradations()));
-            MatcherAssert.assertThat(radioInterferencesDTO.getPossibleProblemSources(), Is.is(radioInterferencesDTO.getPossibleProblemSources()));
+            assertThat(radioInterferencesDTO.getNotes(), is(radioInterferencesDTO.getNotes()));
+            assertThat(radioInterferencesDTO.getObservedDegradations(), is(radioInterferencesDTO.getObservedDegradations()));
+            assertThat(radioInterferencesDTO.getPossibleProblemSources(), is(radioInterferencesDTO.getPossibleProblemSources()));
 
             // From Date
             String expectedFromDateFormatted = format.format(radioInterferenceEntity.getEffectiveDates().getFrom());
-            String actualFromDateString = ((TimePeriodType) radioInterferencesDTO.getValidTime().getAbstractTimePrimitive().getValue()).getBeginPosition().getValue().get(0);
+            String actualFromDateString = ((TimePeriodType) radioInterferencesDTO.getValidTime().getAbstractTimePrimitive().getValue())
+                .getBeginPosition().getValue().get(0);
             String actualFromDateFormatted = GMLDateUtils.stringToDateToString(actualFromDateString, format);
-            MatcherAssert.assertThat(expectedFromDateFormatted, Is.is(actualFromDateFormatted));
+            assertThat(expectedFromDateFormatted, is(actualFromDateFormatted));
         }
-    }
-
-    /**
-     * @param radioInterferenceEntity
-     * @param toFromDate
-     * @return date as string extracted from the given Entity object and format using the internal format being used
-     */
-    private String getEntityDateFormattedAsString(RadioInterference radioInterferenceEntity, ToFromDate toFromDate) {
-        String dateFormatted = null;
-        if (toFromDate == ToFromDate.FROM_DATE) {
-            dateFormatted = format.format(radioInterferenceEntity.getEffectiveDates().getFrom());
-        } else {
-            dateFormatted = format.format(radioInterferenceEntity.getEffectiveDates().getTo());
-        }
-        return dateFormatted;
     }
 
     /**
@@ -151,9 +139,11 @@ public class RadioInterferenceMapperTest {
         String dateFormattedString = null;
 
         if (toFromDate == ToFromDate.FROM_DATE) {
-            dateFormattedString = ((TimePeriodType) radioInterferencesDTO.getValidTime().getAbstractTimePrimitive().getValue()).getBeginPosition().getValue().get(0);
+            dateFormattedString = ((TimePeriodType) radioInterferencesDTO.getValidTime().getAbstractTimePrimitive().getValue())
+                .getBeginPosition().getValue().get(0);
         } else {
-            dateFormattedString = ((TimePeriodType) radioInterferencesDTO.getValidTime().getAbstractTimePrimitive().getValue()).getEndPosition().getValue().get(0);
+            dateFormattedString = ((TimePeriodType) radioInterferencesDTO.getValidTime().getAbstractTimePrimitive().getValue())
+                .getEndPosition().getValue().get(0);
         }
         Instant intermediateDate = GMLDateUtils.stringToDateMultiParsers(dateFormattedString);
         String dateFormatted = GMLDateUtils.dateToString(intermediateDate, format);
