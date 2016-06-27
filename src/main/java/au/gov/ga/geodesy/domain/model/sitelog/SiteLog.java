@@ -37,6 +37,11 @@ public class SiteLog {
     @SequenceGenerator(name = "surrogateKeyGenerator", sequenceName = "SEQ_SITELOGSITE")
     private @MonotonicNonNull Integer id;
 
+
+    public SiteLog() {
+        System.out.println("More information constructor: " + moreInformation);
+    }
+
     // TODO: does every table need entryDate?
     private @MonotonicNonNull Instant entryDate;
 
@@ -417,9 +422,9 @@ public class SiteLog {
     /**
      * Set more information.
      */
-    public void setMoreInformation(MoreInformation value) {
-        this.moreInformation = value;
-    }
+//    public void setMoreInformation(MoreInformation value) {
+//        this.moreInformation = value;
+//    }
 
     /**
      * @return the siteContact

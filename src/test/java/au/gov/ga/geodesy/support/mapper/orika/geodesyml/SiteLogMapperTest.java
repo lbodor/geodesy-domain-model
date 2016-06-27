@@ -31,7 +31,7 @@ public class SiteLogMapperTest {
      **/
     @Test
     public void testMapping() throws Exception {
-        GeodesyMLType mobs = marshaller.unmarshal(TestResources.geodesyMLSiteLogReader("MOBS"), GeodesyMLType.class)
+        GeodesyMLType mobs = marshaller.unmarshal(TestResources.geodesyMLTestDataSiteLogReader("MOBS-everything"), GeodesyMLType.class)
                 .getValue();
 
         SiteLogType siteLogType = GeodesyMLUtils.getElementFromJAXBElements(mobs.getElements(), SiteLogType.class)
@@ -39,6 +39,11 @@ public class SiteLogMapperTest {
 
         SiteLog siteLog = mapper.to(siteLogType);
         testMappingValues(siteLogType, siteLog);
+        System.out.println("MoreInformation after: "+siteLog.getMoreInformation());
+        System.out.println();
+
+        // Assert if some fields are being set
+        assertThat(siteLog.getMoreInformation().getDoi(), equalTo("DOI-1234"));
 
         // TODO: test the from mapping when it is implemented
         // SiteLogType mappedSiteLogType = mapper.from(siteLog);

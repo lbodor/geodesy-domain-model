@@ -8,6 +8,7 @@ import au.gov.ga.geodesy.domain.model.sitelog.GnssReceiverLogItem;
 import au.gov.ga.geodesy.domain.model.sitelog.HumiditySensorLogItem;
 import au.gov.ga.geodesy.domain.model.sitelog.LocalEpisodicEventLogItem;
 import au.gov.ga.geodesy.domain.model.sitelog.LogItem;
+import au.gov.ga.geodesy.domain.model.sitelog.MoreInformation;
 import au.gov.ga.geodesy.domain.model.sitelog.MultipathSourceLogItem;
 import au.gov.ga.geodesy.domain.model.sitelog.OtherInstrumentationLogItem;
 import au.gov.ga.geodesy.domain.model.sitelog.PressureSensorLogItem;
@@ -20,6 +21,7 @@ import au.gov.ga.geodesy.domain.model.sitelog.WaterVaporSensorLogItem;
 import au.gov.ga.geodesy.support.gml.GMLPropertyType;
 import au.gov.ga.geodesy.support.java.util.Iso;
 import au.gov.xml.icsm.geodesyml.v_0_3.LocalEpisodicEventsPropertyType;
+import au.gov.xml.icsm.geodesyml.v_0_3.MoreInformationType;
 import au.gov.xml.icsm.geodesyml.v_0_3.MultipathSourcesPropertyType;
 import au.gov.xml.icsm.geodesyml.v_0_3.SignalObstructionsPropertyType;
 import au.gov.xml.icsm.geodesyml.v_0_3.SiteIdentificationType;
@@ -57,6 +59,8 @@ public class SiteLogMapper implements Iso<SiteLogType, SiteLog> {
             .fieldMap("signalObstructionsSet", "signalObstructionLogItems").converter("signalObstructionsSet").add()
             .fieldMap("multipathSourcesSet", "multipathSourceLogItems").converter("multipathSourcesSet").add()
             .fieldMap("localEpisodicEventsSet", "localEpisodicEventLogItems").converter("localEpisodicEventsSet").add()
+            .fieldMap("moreInformation", "moreInformation").converter("moreInformation").add()
+
             /* .byDefault() */
             .register();
 
@@ -121,6 +125,11 @@ public class SiteLogMapper implements Iso<SiteLogType, SiteLog> {
                         logItemsConverter(new LocalEpisodicEventMapper())
                 ) {}
         );
+
+        converters.registerConverter("moreInformation", new IsoConverter<MoreInformationType, MoreInformation>(new MoreInformationMapper
+            ()) {
+        });
+
 
         mapper = mapperFactory.getMapperFacade();
     }
