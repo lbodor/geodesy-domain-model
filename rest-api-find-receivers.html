@@ -111,7 +111,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'http://localhost:8080/gnssReceivers?type=TRIMBLE%20NETRS' -i</code></pre>
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'http://egeodesy.ga.gov.au:8080/gnssReceivers?type=TRIMBLE%20NETRS' -i</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -121,7 +121,7 @@
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/hal+json;charset=UTF-8
-Content-Length: 742
+Content-Length: 778
 
 {
   &quot;_embedded&quot; : {
@@ -132,10 +132,10 @@ Content-Length: 742
       &quot;serialNumber&quot; : &quot;4526253099&quot;,
       &quot;_links&quot; : {
         &quot;self&quot; : {
-          &quot;href&quot; : &quot;http://localhost:8080/gnssReceivers/102503&quot;
+          &quot;href&quot; : &quot;http://egeodesy.ga.gov.au:8080/gnssReceivers/102904&quot;
         },
         &quot;gnssReceiver&quot; : {
-          &quot;href&quot; : &quot;http://localhost:8080/gnssReceivers/102503{?projection}&quot;,
+          &quot;href&quot; : &quot;http://egeodesy.ga.gov.au:8080/gnssReceivers/102904{?projection}&quot;,
           &quot;templated&quot; : true
         }
       }
@@ -143,10 +143,10 @@ Content-Length: 742
   },
   &quot;_links&quot; : {
     &quot;self&quot; : {
-      &quot;href&quot; : &quot;http://localhost:8080/gnssReceivers&quot;
+      &quot;href&quot; : &quot;http://egeodesy.ga.gov.au:8080/gnssReceivers&quot;
     },
     &quot;profile&quot; : {
-      &quot;href&quot; : &quot;http://localhost:8080/profile/gnssReceivers&quot;
+      &quot;href&quot; : &quot;http://egeodesy.ga.gov.au:8080/profile/gnssReceivers&quot;
     }
   },
   &quot;page&quot; : {
