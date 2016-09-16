@@ -166,4 +166,23 @@ public class SiteLogEndpoint {
         }
         return ResponseEntity.badRequest().contentType(MediaType.TEXT_PLAIN).body(response.toString());
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> errorHandler(Exception e) throws IOException {
+        StringWriter response = new StringWriter();
+
+        log.error("Unexpected error", e);
+        e.printStackTrace(new PrintWriter(response));
+
+        /* if (e.getCause() instanceof au.gov.ga.geodesy.igssitelog.interfaces.xml.MarshallingException) { */
+        /*     List<String> validationMessages = */
+        /*         ((au.gov.ga.geodesy.igssitelog.interfaces.xml.MarshallingException) e.getCause()).getValidationMessages(); */
+        /*  */
+        /*     for (String validationMsg : validationMessages) { */
+        /*         log.error(validationMsg); */
+        /*         response.append(validationMsg + System.lineSeparator()); */
+        /*     } */
+        /* } */
+        return ResponseEntity.badRequest().contentType(MediaType.TEXT_PLAIN).body(response.toString());
+    }
 }

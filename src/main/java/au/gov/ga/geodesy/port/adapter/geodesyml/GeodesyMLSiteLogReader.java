@@ -8,7 +8,6 @@ import au.gov.ga.geodesy.port.InvalidSiteLogException;
 import au.gov.ga.geodesy.port.SiteLogReader;
 import au.gov.ga.geodesy.support.mapper.orika.geodesyml.SiteLogMapper;
 import au.gov.ga.geodesy.support.marshalling.moxy.GeodesyMLMoxy;
-import au.gov.xml.icsm.geodesyml.v_0_3.GeodesyMLType;
 import au.gov.xml.icsm.geodesyml.v_0_3.SiteLogType;
 
 /**
@@ -32,12 +31,9 @@ public class GeodesyMLSiteLogReader extends SiteLogReader {
      */
     public SiteLog getSiteLog(String siteLogText) throws InvalidSiteLogException {
         try {
-            GeodesyMLType geodesyML = marshaller.unmarshal(new StringReader(siteLogText), GeodesyMLType.class).getValue();
-            return GeodesyMLUtils
-                    .getElementFromJAXBElements(geodesyML.getElements(), SiteLogType.class)
-                    .map(siteLogMapper::to)
-                    .findFirst()
-                    .get(); // TODO: are there any
+            Reader reader = new StringReader(siteLogText);
+            SiteLogType siteLogType = marshaller.unmarshal(reader, SiteLogType.class).getValue();
+            return siteLogMapper.to(siteLogType);
         }
         catch (MarshallingException e) {
             throw new InvalidSiteLogException(e);
