@@ -63,7 +63,7 @@
         Introduction</a>
             </li>
                               <li class="nav-header">Project Documentation</li>
-                                                                                                                                                  
+                                                                                                                                                            
       <li>
   
                           <a href="" title="REST API">
@@ -85,12 +85,10 @@
         Find Sites</a>
             </li>
                     
-      <li>
+      <li class="active">
   
-                          <a href="rest-api-patch-cors-site.html" title="Modify a Site">
-          <span class="none"></span>
-        Modify a Site</a>
-            </li>
+            <a href="#"><span class="none"></span>Modify a Site</a>
+          </li>
                     
       <li>
   
@@ -108,10 +106,12 @@
               </ul>
         </li>
                 
-      <li class="active">
+      <li>
   
-            <a href="#"><span class="none"></span>Database Schema Diagram</a>
-          </li>
+                          <a href="schemacrawler.html" title="Database Schema Diagram">
+          <span class="none"></span>
+        Database Schema Diagram</a>
+            </li>
             </ul>
               
                 
@@ -132,7 +132,27 @@
                 
         <div id="bodyColumn"  class="span10" >
                                   
-            <!--BEGIN SchemaCrawler Report--><img src="schemacrawler.png" alt="" /><!--END SchemaCrawler Report-->
+            <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sample curl request to modify a cors site:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">$ curl 'https://test.geodesy.ga.gov.au/corsSites/61152' -i -X PATCH -d '{&quot;siteStatus&quot;: &quot;PRIVATE&quot;}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample response:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="http">HTTP/1.1 204 No Content
+ETag: &quot;0&quot;</code></pre>
+</div>
+</div>
+</div>
+</div>
                   </div>
             </div>
           </div>
